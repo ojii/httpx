@@ -170,7 +170,9 @@ def test_elapsed_delay(server):
 
 def test_elapsed_delay_ignores_read_time(server):
     with httpx.Client() as http:
-        response = http.get(server.url.copy_with(path="/slow_response/50"), stream=True)
-    sleep(0.1)
+        response = http.get(
+            server.url.copy_with(path="/slow_response/100"), stream=True
+        )
+    sleep(0.05)
     response.read()
-    assert response.elapsed.total_seconds() == pytest.approx(0.05, abs=0.01)
+    assert response.elapsed.total_seconds() == pytest.approx(0.1, abs=0.01)
