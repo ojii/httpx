@@ -1,4 +1,5 @@
 import codecs
+import collections
 import logging
 import netrc
 import os
@@ -10,6 +11,9 @@ from pathlib import Path
 from time import perf_counter
 from types import TracebackType
 from urllib.request import getproxies
+
+if typing.TYPE_CHECKING:  # pragma: no cover
+    from .models import PrimitiveData
 
 
 def normalize_header_key(value: typing.AnyStr, encoding: str = None) -> bytes:
@@ -30,7 +34,7 @@ def normalize_header_value(value: typing.AnyStr, encoding: str = None) -> bytes:
     return value.encode(encoding or "ascii")
 
 
-def str_query_param(value: typing.Optional[typing.Union[str, int, float, bool]]) -> str:
+def str_query_param(value: "PrimitiveData") -> str:
     """
     Coerce a primitive data type into a string value for query params.
 
@@ -254,6 +258,23 @@ def to_bytes_or_str(value: str, match_type_of: typing.AnyStr) -> typing.AnyStr:
 
 def unquote(value: str) -> str:
     return value[1:-1] if value[0] == value[-1] == '"' else value
+
+
+K = typing.TypeVar("K")
+V = typing.TypeVar("V")
+
+
+def flatten_on_values(
+    items: typing.Iterable[
+        typing.Union[typing.Tuple[K, typing.Union[V, typing.Sequence[V]]]]
+    ]
+) -> typing.Iterator[typing.Tuple[K, V]]:
+    for k, v in items:
+        if isinstance(v, collections.abc.Sequence) and not isinstance(v, (str, bytes)):
+            for u in v:
+                yield (k, u)
+        else:
+            yield (k, typing.cast(V, v))
 
 
 class ElapsedTimer:

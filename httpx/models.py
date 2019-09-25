@@ -32,6 +32,7 @@ from .exceptions import (
 from .multipart import multipart_encode
 from .status_codes import StatusCode
 from .utils import (
+    flatten_on_values,
     guess_json_utf,
     is_known_encoding,
     normalize_header_key,
@@ -51,7 +52,7 @@ URLTypes = typing.Union["URL", str]
 
 QueryParamTypes = typing.Union[
     "QueryParams",
-    typing.Mapping[str, PrimitiveData],
+    typing.Mapping[str, typing.Union[PrimitiveData, typing.Sequence[PrimitiveData]]],
     typing.List[typing.Tuple[str, PrimitiveData]],
     str,
 ]
@@ -285,14 +286,15 @@ class QueryParams(typing.Mapping[str, str]):
 
         value = args[0] if args else kwargs
 
+        items: typing.Sequence[typing.Tuple[str, PrimitiveData]]
         if isinstance(value, str):
             items = parse_qsl(value)
         elif isinstance(value, QueryParams):
             items = value.multi_items()
         elif isinstance(value, list):
-            items = value  # type: ignore
+            items = value
         else:
-            items = value.items()  # type: ignore
+            items = list(flatten_on_values(value.items()))
 
         self._list = [(str(k), str_query_param(v)) for k, v in items]
         self._dict = {str(k): str_query_param(v) for k, v in items}
