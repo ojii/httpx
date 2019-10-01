@@ -51,9 +51,9 @@ class SSLConfig:
     def __init__(
         self,
         *,
-        cert: CertTypes = None,
+        cert: typing.Optional[CertTypes] = None,
         verify: VerifyTypes = True,
-        trust_env: bool = None,
+        trust_env: typing.Optional[bool] = None,
     ):
         self.cert = cert
 
@@ -81,7 +81,9 @@ class SSLConfig:
         return f"{class_name}(cert={self.cert}, verify={self.verify})"
 
     def with_overrides(
-        self, cert: CertTypes = None, verify: VerifyTypes = None
+        self,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
     ) -> "SSLConfig":
         cert = self.cert if cert is None else cert
         verify = self.verify if verify is None else verify
@@ -90,7 +92,7 @@ class SSLConfig:
         return SSLConfig(cert=cert, verify=verify)
 
     def load_ssl_context(
-        self, http_versions: "HTTPVersionConfig" = None
+        self, http_versions: typing.Optional["HTTPVersionConfig"] = None
     ) -> ssl.SSLContext:
         http_versions = HTTPVersionConfig() if http_versions is None else http_versions
 
@@ -222,11 +224,11 @@ class TimeoutConfig:
 
     def __init__(
         self,
-        timeout: TimeoutTypes = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
         *,
-        connect_timeout: float = None,
-        read_timeout: float = None,
-        write_timeout: float = None,
+        connect_timeout: typing.Optional[float] = None,
+        read_timeout: typing.Optional[float] = None,
+        write_timeout: typing.Optional[float] = None,
     ):
         if timeout is None:
             self.connect_timeout = connect_timeout
@@ -273,7 +275,7 @@ class HTTPVersionConfig:
     Configure which HTTP protocol versions are supported.
     """
 
-    def __init__(self, http_versions: HTTPVersionTypes = None):
+    def __init__(self, http_versions: typing.Optional[HTTPVersionTypes] = None):
         if http_versions is None:
             http_versions = ["HTTP/1.1", "HTTP/2"]
 
@@ -322,9 +324,9 @@ class PoolLimits:
     def __init__(
         self,
         *,
-        soft_limit: int = None,
-        hard_limit: int = None,
-        pool_timeout: float = None,
+        soft_limit: typing.Optional[int] = None,
+        hard_limit: typing.Optional[int] = None,
+        pool_timeout: typing.Optional[float] = None,
     ):
         self.soft_limit = soft_limit
         self.hard_limit = hard_limit

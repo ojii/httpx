@@ -30,11 +30,11 @@ class AsyncDispatcher:
         url: URLTypes,
         *,
         data: AsyncRequestData = b"",
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
     ) -> AsyncResponse:
         request = AsyncRequest(method, url, data=data, params=params, headers=headers)
         return await self.send(request, verify=verify, cert=cert, timeout=timeout)
@@ -42,9 +42,9 @@ class AsyncDispatcher:
     async def send(
         self,
         request: AsyncRequest,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
     ) -> AsyncResponse:
         raise NotImplementedError()  # pragma: nocover
 
@@ -57,8 +57,8 @@ class AsyncDispatcher:
     async def __aexit__(
         self,
         exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
+        exc_value: typing.Optional[BaseException] = None,
+        traceback: typing.Optional[TracebackType] = None,
     ) -> None:
         await self.close()
 
@@ -78,11 +78,11 @@ class Dispatcher:
         url: URLTypes,
         *,
         data: RequestData = b"",
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
     ) -> Response:
         request = Request(method, url, data=data, params=params, headers=headers)
         return self.send(request, verify=verify, cert=cert, timeout=timeout)
@@ -90,9 +90,9 @@ class Dispatcher:
     def send(
         self,
         request: Request,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
     ) -> Response:
         raise NotImplementedError()  # pragma: nocover
 
@@ -105,7 +105,7 @@ class Dispatcher:
     def __exit__(
         self,
         exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
+        exc_value: typing.Optional[BaseException] = None,
+        traceback: typing.Optional[TracebackType] = None,
     ) -> None:
         self.close()

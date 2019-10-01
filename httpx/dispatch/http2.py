@@ -21,7 +21,7 @@ class HTTP2Connection:
         self,
         stream: BaseTCPStream,
         backend: ConcurrencyBackend,
-        on_release: typing.Callable = None,
+        on_release: typing.Optional[typing.Callable] = None,
     ):
         self.stream = stream
         self.backend = backend
@@ -33,7 +33,7 @@ class HTTP2Connection:
         self.window_update_received = {}  # type: typing.Dict[int, BaseEvent]
 
     async def send(
-        self, request: AsyncRequest, timeout: TimeoutTypes = None
+        self, request: AsyncRequest, timeout: typing.Optional[TimeoutTypes] = None
     ) -> AsyncResponse:
         timeout = None if timeout is None else TimeoutConfig(timeout)
 
@@ -94,7 +94,7 @@ class HTTP2Connection:
         self.initialized = True
 
     async def send_headers(
-        self, request: AsyncRequest, timeout: TimeoutConfig = None
+        self, request: AsyncRequest, timeout: typing.Optional[TimeoutConfig] = None
     ) -> int:
         stream_id = self.h2_state.get_next_available_stream_id()
         headers = [
@@ -120,7 +120,7 @@ class HTTP2Connection:
         self,
         stream_id: int,
         stream: typing.AsyncIterator[bytes],
-        timeout: TimeoutConfig = None,
+        timeout: typing.Optional[TimeoutConfig] = None,
     ) -> None:
         try:
             async for data in stream:
@@ -131,7 +131,10 @@ class HTTP2Connection:
             self.timeout_flags[stream_id].set_read_timeouts()
 
     async def send_data(
-        self, stream_id: int, data: bytes, timeout: TimeoutConfig = None
+        self,
+        stream_id: int,
+        data: bytes,
+        timeout: typing.Optional[TimeoutConfig] = None,
     ) -> None:
         while data:
             # The data will be divided into frames to send based on the flow control
@@ -155,14 +158,16 @@ class HTTP2Connection:
                 data_to_send = self.h2_state.data_to_send()
                 await self.stream.write(data_to_send, timeout)
 
-    async def end_stream(self, stream_id: int, timeout: TimeoutConfig = None) -> None:
+    async def end_stream(
+        self, stream_id: int, timeout: typing.Optional[TimeoutConfig] = None
+    ) -> None:
         logger.debug(f"end_stream stream_id={stream_id}")
         self.h2_state.end_stream(stream_id)
         data_to_send = self.h2_state.data_to_send()
         await self.stream.write(data_to_send, timeout)
 
     async def receive_response(
-        self, stream_id: int, timeout: TimeoutConfig = None
+        self, stream_id: int, timeout: typing.Optional[TimeoutConfig] = None
     ) -> typing.Tuple[int, typing.List[typing.Tuple[bytes, bytes]]]:
         """
         Read the response status and headers from the network.
@@ -186,7 +191,7 @@ class HTTP2Connection:
         return (status_code, headers)
 
     async def body_iter(
-        self, stream_id: int, timeout: TimeoutConfig = None
+        self, stream_id: int, timeout: typing.Optional[TimeoutConfig] = None
     ) -> typing.AsyncIterator[bytes]:
         while True:
             event = await self.receive_event(stream_id, timeout)
@@ -199,7 +204,7 @@ class HTTP2Connection:
                 break
 
     async def receive_event(
-        self, stream_id: int, timeout: TimeoutConfig = None
+        self, stream_id: int, timeout: typing.Optional[TimeoutConfig] = None
     ) -> h2.events.Event:
         while not self.events[stream_id]:
             flag = self.timeout_flags[stream_id]

@@ -83,12 +83,12 @@ class ConnectionPool(AsyncDispatcher):
         self,
         *,
         verify: VerifyTypes = True,
-        cert: CertTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        trust_env: typing.Optional[bool] = None,
         timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
         pool_limits: PoolLimits = DEFAULT_POOL_LIMITS,
-        http_versions: HTTPVersionTypes = None,
-        backend: ConcurrencyBackend = None,
+        http_versions: typing.Optional[HTTPVersionTypes] = None,
+        backend: typing.Optional[ConcurrencyBackend] = None,
     ):
         self.verify = verify
         self.cert = cert
@@ -111,9 +111,9 @@ class ConnectionPool(AsyncDispatcher):
     async def send(
         self,
         request: AsyncRequest,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
     ) -> AsyncResponse:
         connection = await self.acquire_connection(origin=request.url.origin)
         try:

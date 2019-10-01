@@ -1,7 +1,7 @@
 import typing
 
 if typing.TYPE_CHECKING:
-    from .models import BaseRequest, BaseResponse  # pragma: nocover
+    from .models import BaseRequest, BaseResponse  # pragma: nocover # noqa: F401
 
 
 class HTTPError(Exception):
@@ -12,8 +12,8 @@ class HTTPError(Exception):
     def __init__(
         self,
         *args: typing.Any,
-        request: "BaseRequest" = None,
-        response: "BaseResponse" = None,
+        request: typing.Optional["BaseRequest"] = None,
+        response: typing.Optional["BaseResponse"] = None,
     ) -> None:
         self.response = response
         self.request = request or getattr(self.response, "request", None)

@@ -12,7 +12,9 @@ from types import TracebackType
 from urllib.request import getproxies
 
 
-def normalize_header_key(value: typing.AnyStr, encoding: str = None) -> bytes:
+def normalize_header_key(
+    value: typing.AnyStr, encoding: typing.Optional[str] = None
+) -> bytes:
     """
     Coerce str/bytes into a strictly byte-wise HTTP header key.
     """
@@ -21,7 +23,9 @@ def normalize_header_key(value: typing.AnyStr, encoding: str = None) -> bytes:
     return value.encode(encoding or "ascii").lower()
 
 
-def normalize_header_value(value: typing.AnyStr, encoding: str = None) -> bytes:
+def normalize_header_value(
+    value: typing.AnyStr, encoding: typing.Optional[str] = None
+) -> bytes:
     """
     Coerce str/bytes into a strictly byte-wise HTTP header value.
     """
@@ -268,8 +272,8 @@ class ElapsedTimer:
     def __exit__(
         self,
         exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
+        exc_value: typing.Optional[BaseException] = None,
+        traceback: typing.Optional[TracebackType] = None,
     ) -> None:
         self.end = perf_counter()
 

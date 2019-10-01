@@ -57,9 +57,9 @@ class WSGIDispatch(Dispatcher):
     def send(
         self,
         request: Request,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
     ) -> Response:
         environ = {
             "wsgi.version": (1, 0),
@@ -160,5 +160,5 @@ class BodyStream(io.RawIOBase):
     def seek(self, offset: int, whence: int = 0) -> int:
         raise OSError("Operation not supported")  # pragma: nocover
 
-    def truncate(self, size: int = None) -> int:
+    def truncate(self, size: typing.Optional[int] = None) -> int:
         raise OSError("Operation not supported")  # pragma: nocover

@@ -52,7 +52,7 @@ class ASGIDispatch(AsyncDispatcher):
         raise_app_exceptions: bool = True,
         root_path: str = "",
         client: typing.Tuple[str, int] = ("127.0.0.1", 123),
-        backend: ConcurrencyBackend = None,
+        backend: typing.Optional[ConcurrencyBackend] = None,
     ) -> None:
         self.app = app
         self.raise_app_exceptions = raise_app_exceptions
@@ -63,9 +63,9 @@ class ASGIDispatch(AsyncDispatcher):
     async def send(
         self,
         request: AsyncRequest,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
     ) -> AsyncResponse:
 
         scope = {

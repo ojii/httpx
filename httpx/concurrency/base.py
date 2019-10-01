@@ -48,14 +48,19 @@ class BaseTCPStream:
         raise NotImplementedError()  # pragma: no cover
 
     async def read(
-        self, n: int, timeout: TimeoutConfig = None, flag: typing.Any = None
+        self,
+        n: int,
+        timeout: typing.Optional[TimeoutConfig] = None,
+        flag: typing.Any = None,
     ) -> bytes:
         raise NotImplementedError()  # pragma: no cover
 
     def write_no_block(self, data: bytes) -> None:
         raise NotImplementedError()  # pragma: no cover
 
-    async def write(self, data: bytes, timeout: TimeoutConfig = None) -> None:
+    async def write(
+        self, data: bytes, timeout: typing.Optional[TimeoutConfig] = None
+    ) -> None:
         raise NotImplementedError()  # pragma: no cover
 
     async def close(self) -> None:
@@ -182,13 +187,13 @@ class BaseBackgroundManager:
 
     async def __aexit__(
         self,
-        exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
+        exc_type: typing.Optional[typing.Type[BaseException]] = None,
+        exc_value: typing.Optional[BaseException] = None,
+        traceback: typing.Optional[TracebackType] = None,
     ) -> None:
         raise NotImplementedError()  # pragma: no cover
 
-    async def close(self, exception: BaseException = None) -> None:
+    async def close(self, exception: typing.Optional[BaseException] = None) -> None:
         if exception is None:
             await self.__aexit__(None, None, None)
         else:

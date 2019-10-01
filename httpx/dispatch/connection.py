@@ -32,11 +32,11 @@ class HTTPConnection(AsyncDispatcher):
         self,
         origin: typing.Union[str, Origin],
         verify: VerifyTypes = True,
-        cert: CertTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        trust_env: typing.Optional[bool] = None,
         timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
-        http_versions: HTTPVersionTypes = None,
-        backend: ConcurrencyBackend = None,
+        http_versions: typing.Optional[HTTPVersionTypes] = None,
+        backend: typing.Optional[ConcurrencyBackend] = None,
         release_func: typing.Optional[ReleaseCallback] = None,
     ):
         self.origin = Origin(origin) if isinstance(origin, str) else origin
@@ -51,9 +51,9 @@ class HTTPConnection(AsyncDispatcher):
     async def send(
         self,
         request: AsyncRequest,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
     ) -> AsyncResponse:
         if self.h11_connection is None and self.h2_connection is None:
             await self.connect(verify=verify, cert=cert, timeout=timeout)
@@ -68,9 +68,9 @@ class HTTPConnection(AsyncDispatcher):
 
     async def connect(
         self,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
     ) -> None:
         ssl = self.ssl.with_overrides(verify=verify, cert=cert)
         timeout = self.timeout if timeout is None else TimeoutConfig(timeout)

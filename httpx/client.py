@@ -55,21 +55,21 @@ class BaseClient:
     def __init__(
         self,
         *,
-        auth: AuthTypes = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         verify: VerifyTypes = True,
-        cert: CertTypes = None,
-        http_versions: HTTPVersionTypes = None,
-        proxies: ProxiesTypes = None,
+        cert: typing.Optional[CertTypes] = None,
+        http_versions: typing.Optional[HTTPVersionTypes] = None,
+        proxies: typing.Optional[ProxiesTypes] = None,
         timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
         pool_limits: PoolLimits = DEFAULT_POOL_LIMITS,
         max_redirects: int = DEFAULT_MAX_REDIRECTS,
-        base_url: URLTypes = None,
+        base_url: typing.Optional[URLTypes] = None,
         dispatch: typing.Union[AsyncDispatcher, Dispatcher] = None,
         app: typing.Callable = None,
-        backend: ConcurrencyBackend = None,
+        backend: typing.Optional[ConcurrencyBackend] = None,
         trust_env: bool = True,
     ):
         if backend is None:
@@ -166,7 +166,7 @@ class BaseClient:
         return url
 
     def merge_cookies(
-        self, cookies: CookieTypes = None
+        self, cookies: typing.Optional[CookieTypes] = None
     ) -> typing.Optional[CookieTypes]:
         if cookies or self.cookies:
             merged_cookies = Cookies(self.cookies)
@@ -175,7 +175,7 @@ class BaseClient:
         return cookies
 
     def merge_headers(
-        self, headers: HeaderTypes = None
+        self, headers: typing.Optional[HeaderTypes] = None
     ) -> typing.Optional[HeaderTypes]:
         if headers or self.headers:
             merged_headers = Headers(self.headers)
@@ -184,7 +184,7 @@ class BaseClient:
         return headers
 
     def merge_queryparams(
-        self, params: QueryParamTypes = None
+        self, params: typing.Optional[QueryParamTypes] = None
     ) -> typing.Optional[QueryParamTypes]:
         if params or self.params:
             merged_queryparams = QueryParams(self.params)
@@ -197,12 +197,12 @@ class BaseClient:
         request: AsyncRequest,
         *,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> AsyncResponse:
         if request.url.scheme not in ("http", "https"):
             raise InvalidURL('URL scheme must be "http" or "https".')
@@ -255,7 +255,10 @@ class BaseClient:
         return await get_response(request)
 
     def _get_auth_middleware(
-        self, request: AsyncRequest, trust_env: bool, auth: AuthTypes = None
+        self,
+        request: AsyncRequest,
+        trust_env: bool,
+        auth: typing.Optional[AuthTypes] = None,
     ) -> typing.Optional[BaseMiddleware]:
         if isinstance(auth, tuple):
             return BasicAuthMiddleware(username=auth[0], password=auth[1])
@@ -314,12 +317,12 @@ class BaseClient:
         method: str,
         url: URLTypes,
         *,
-        data: AsyncRequestData = None,
-        files: RequestFiles = None,
+        data: typing.Optional[AsyncRequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
         json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
     ) -> AsyncRequest:
         url = self.merge_url(url)
         headers = self.merge_headers(headers)
@@ -343,16 +346,16 @@ class AsyncClient(BaseClient):
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> AsyncResponse:
         return await self.request(
             "GET",
@@ -373,16 +376,16 @@ class AsyncClient(BaseClient):
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> AsyncResponse:
         return await self.request(
             "OPTIONS",
@@ -403,16 +406,16 @@ class AsyncClient(BaseClient):
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = False,  # NOTE: Differs to usual default.
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> AsyncResponse:
         return await self.request(
             "HEAD",
@@ -433,19 +436,19 @@ class AsyncClient(BaseClient):
         self,
         url: URLTypes,
         *,
-        data: AsyncRequestData = None,
-        files: RequestFiles = None,
+        data: typing.Optional[AsyncRequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
         json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> AsyncResponse:
         return await self.request(
             "POST",
@@ -469,19 +472,19 @@ class AsyncClient(BaseClient):
         self,
         url: URLTypes,
         *,
-        data: AsyncRequestData = None,
-        files: RequestFiles = None,
+        data: typing.Optional[AsyncRequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
         json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> AsyncResponse:
         return await self.request(
             "PUT",
@@ -505,19 +508,19 @@ class AsyncClient(BaseClient):
         self,
         url: URLTypes,
         *,
-        data: AsyncRequestData = None,
-        files: RequestFiles = None,
+        data: typing.Optional[AsyncRequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
         json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> AsyncResponse:
         return await self.request(
             "PATCH",
@@ -541,16 +544,16 @@ class AsyncClient(BaseClient):
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> AsyncResponse:
         return await self.request(
             "DELETE",
@@ -572,19 +575,19 @@ class AsyncClient(BaseClient):
         method: str,
         url: URLTypes,
         *,
-        data: AsyncRequestData = None,
-        files: RequestFiles = None,
+        data: typing.Optional[AsyncRequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
         json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> AsyncResponse:
         request = self.build_request(
             method=method,
@@ -613,12 +616,12 @@ class AsyncClient(BaseClient):
         request: AsyncRequest,
         *,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> AsyncResponse:
         return await self._get_response(
             request=request,
@@ -640,8 +643,8 @@ class AsyncClient(BaseClient):
     async def __aexit__(
         self,
         exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
+        exc_value: typing.Optional[BaseException] = None,
+        traceback: typing.Optional[TracebackType] = None,
     ) -> None:
         await self.close()
 
@@ -666,7 +669,7 @@ class Client(BaseClient):
         raise ValueError("'Client' only supports asyncio-based concurrency backends")
 
     def _async_request_data(
-        self, data: RequestData = None
+        self, data: typing.Optional[RequestData] = None
     ) -> typing.Optional[AsyncRequestData]:
         """
         If the request data is an bytes iterator then return an async bytes
@@ -694,19 +697,19 @@ class Client(BaseClient):
         method: str,
         url: URLTypes,
         *,
-        data: RequestData = None,
-        files: RequestFiles = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
         json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> Response:
         request = self.build_request(
             method=method,
@@ -735,12 +738,12 @@ class Client(BaseClient):
         request: AsyncRequest,
         *,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> Response:
         concurrency_backend = self.concurrency_backend
 
@@ -788,16 +791,16 @@ class Client(BaseClient):
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> Response:
         return self.request(
             "GET",
@@ -818,16 +821,16 @@ class Client(BaseClient):
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> Response:
         return self.request(
             "OPTIONS",
@@ -848,16 +851,16 @@ class Client(BaseClient):
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = False,  # NOTE: Differs to usual default.
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> Response:
         return self.request(
             "HEAD",
@@ -878,19 +881,19 @@ class Client(BaseClient):
         self,
         url: URLTypes,
         *,
-        data: RequestData = None,
-        files: RequestFiles = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
         json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> Response:
         return self.request(
             "POST",
@@ -914,19 +917,19 @@ class Client(BaseClient):
         self,
         url: URLTypes,
         *,
-        data: RequestData = None,
-        files: RequestFiles = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
         json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> Response:
         return self.request(
             "PUT",
@@ -950,19 +953,19 @@ class Client(BaseClient):
         self,
         url: URLTypes,
         *,
-        data: RequestData = None,
-        files: RequestFiles = None,
+        data: typing.Optional[RequestData] = None,
+        files: typing.Optional[RequestFiles] = None,
         json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> Response:
         return self.request(
             "PATCH",
@@ -986,16 +989,16 @@ class Client(BaseClient):
         self,
         url: URLTypes,
         *,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
+        params: typing.Optional[QueryParamTypes] = None,
+        headers: typing.Optional[HeaderTypes] = None,
+        cookies: typing.Optional[CookieTypes] = None,
         stream: bool = False,
-        auth: AuthTypes = None,
+        auth: typing.Optional[AuthTypes] = None,
         allow_redirects: bool = True,
-        cert: CertTypes = None,
-        verify: VerifyTypes = None,
-        timeout: TimeoutTypes = None,
-        trust_env: bool = None,
+        cert: typing.Optional[CertTypes] = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
+        trust_env: typing.Optional[bool] = None,
     ) -> Response:
         return self.request(
             "DELETE",
@@ -1022,8 +1025,8 @@ class Client(BaseClient):
     def __exit__(
         self,
         exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
+        exc_value: typing.Optional[BaseException] = None,
+        traceback: typing.Optional[TracebackType] = None,
     ) -> None:
         self.close()
 

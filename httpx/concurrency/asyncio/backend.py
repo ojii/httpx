@@ -57,7 +57,10 @@ class TCPStream(BaseTCPStream):
         return "HTTP/2" if ident == "h2" else "HTTP/1.1"
 
     async def read(
-        self, n: int, timeout: TimeoutConfig = None, flag: TimeoutFlag = None
+        self,
+        n: int,
+        timeout: typing.Optional[TimeoutConfig] = None,
+        flag: typing.Optional[TimeoutFlag] = None,
     ) -> bytes:
         if timeout is None:
             timeout = self.timeout
@@ -86,7 +89,10 @@ class TCPStream(BaseTCPStream):
         self.stream.write(data)  # pragma: nocover
 
     async def write(
-        self, data: bytes, timeout: TimeoutConfig = None, flag: TimeoutFlag = None
+        self,
+        data: bytes,
+        timeout: typing.Optional[TimeoutConfig] = None,
+        flag: typing.Optional[TimeoutFlag] = None,
     ) -> None:
         if not data:
             return
@@ -258,9 +264,9 @@ class BackgroundManager(BaseBackgroundManager):
 
     async def __aexit__(
         self,
-        exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
+        exc_type: typing.Optional[typing.Type[BaseException]] = None,
+        exc_value: typing.Optional[BaseException] = None,
+        traceback: typing.Optional[TracebackType] = None,
     ) -> None:
         await self.task
         if exc_type is None:

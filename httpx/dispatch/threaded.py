@@ -1,3 +1,5 @@
+import typing
+
 from ..concurrency.base import ConcurrencyBackend
 from ..config import CertTypes, TimeoutTypes, VerifyTypes
 from ..models import (
@@ -27,9 +29,9 @@ class ThreadedDispatcher(AsyncDispatcher):
     async def send(
         self,
         request: AsyncRequest,
-        verify: VerifyTypes = None,
-        cert: CertTypes = None,
-        timeout: TimeoutTypes = None,
+        verify: typing.Optional[VerifyTypes] = None,
+        cert: typing.Optional[CertTypes] = None,
+        timeout: typing.Optional[TimeoutTypes] = None,
     ) -> AsyncResponse:
         concurrency_backend = self.backend
 
